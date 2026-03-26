@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Love Birthday</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }body {
+    height:100vh;
+    overflow:hidden;
+    background: radial-gradient(circle at center, #001a33, #000);
+    font-family: 'Orbitron', sans-serif;
+    color:white;
+}
+
+canvas {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:0;
+}
+
+.content {
+    position:relative;
+    z-index:2;
+    text-align:center;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+h1 {
+    font-size:4rem;
+    letter-spacing:5px;
+    animation: neon 1.5s infinite alternate;
+}
+
+.line {
+    font-size:2rem;
+    margin-top:20px;
+    opacity:0;
+    animation: fadeUp 2s forwards;
+}
+
+.line:nth-child(2){ animation-delay:1s; }
+.line:nth-child(3){ animation-delay:2s; }
+
+@keyframes neon {
+    from { text-shadow:0 0 10px #00f, 0 0 20px #0ff; }
+    to { text-shadow:0 0 30px #00f, 0 0 60px #0ff; }
+}
+
+@keyframes fadeUp {
+    from { transform:translateY(40px); opacity:0; }
+    to { transform:translateY(0); opacity:1; }
+}
+
+.pulse {
+    position:absolute;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(0,150,255,0.4), transparent);
+    animation: pulse 3s infinite;
+    z-index:1;
+}
+
+@keyframes pulse {
+    0% { transform:scale(0.5); opacity:0.7; }
+    100% { transform:scale(2.5); opacity:0; }
+}
+
+</style>
+</head>
+<body><canvas id="bg"></canvas>
+
+<div class="pulse" style="top:40%; left:45%;"></div><div class="content">
+    <h1>I LOVE YOU 💙</h1>
+    <div class="line">HAPPY BIRTHDAY 🎉</div>
+    <div class="line">YA HAPPOPATY 💖</div>
+</div><script>
+// ===== PARTICLE SYSTEM =====
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+    constructor(){
+        this.x = Math.random()*canvas.width;
+        this.y = Math.random()*canvas.height;
+        this.size = Math.random()*3 + 1;
+        this.speedX = (Math.random()-0.5)*1;
+        this.speedY = (Math.random()-0.5)*1;
+    }
+    update(){
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if(this.x<0 || this.x>canvas.width) this.speedX *= -1;
+        if(this.y<0 || this.y>canvas.height) this.speedY *= -1;
+    }
+    draw(){
+        ctx.fillStyle = '#00ccff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fill();
+    }
+}
+
+function init(){
+    for(let i=0;i<120;i++){
+        particles.push(new Particle());
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+        p.update();
+        p.draw();
+    });
+    requestAnimationFrame(animate);
+}
+
+init();
+animate();
+
+// ===== FLOATING HEARTS =====
+function heart(){
+    const h = document.createElement('div');
+    h.innerHTML = '💙';
+    h.style.position='absolute';
+    h.style.left=Math.random()*100+'vw';
+    h.style.bottom='-20px';
+    h.style.fontSize=(20+Math.random()*30)+'px';
+    h.style.animation=`rise ${4+Math.random()*4}s linear`;
+    document.body.appendChild(h);
+
+    setTimeout(()=>h.remove(),8000);
+}
+
+setInterval(heart,120);
+
+// ===== HEART ANIMATION =====
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes rise {
+    from { transform:translateY(0); opacity:1; }
+    to { transform:translateY(-110vh); opacity:0; }
+}`;
+document.head.appendChild(style);
+
+// ===== CLICK FIREWORK =====
+document.addEventListener('click', (e)=>{
+    for(let i=0;i<20;i++){
+        const spark = document.createElement('div');
+        spark.style.position='absolute';
+        spark.style.left=e.clientX+'px';
+        spark.style.top=e.clientY+'px';
+        spark.style.width='5px';
+        spark.style.height='5px';
+        spark.style.background='cyan';
+        spark.style.borderRadius='50%';
+        spark.style.transition='1s';
+        document.body.appendChild(spark);
+
+        setTimeout(()=>{
+            spark.style.transform=`translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px)`;
+            spark.style.opacity='0';
+        },10);
+
+        setTimeout(()=>spark.remove(),1000);
+    }
+});
+</script></body>
+</html>
